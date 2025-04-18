@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GameFrameworkLib.AttackItems.BaseAttackItem;
 using GameFrameworkLib.Creatures;
+using GameFrameworkLib.Decorator;
 using GameFrameworkLib.State;
 using GameFrameworkLib.Template;
 
@@ -42,6 +43,7 @@ namespace GameFrameworkLib.Playground
         // random
         private static Random rnd = new Random(DateTime.Now.Millisecond);
 
+
         public World(int maxX, int maxY)
         {
             _playground = new char[maxX, maxY];
@@ -58,6 +60,8 @@ namespace GameFrameworkLib.Playground
                 WorldObjects.Add(new HealthPotion("Health", true, true, new Position(rnd.Next(maxY), rnd.Next(maxX)), "Greater Healthpotion", 30));
             }
             WorldObjects.Add(new AttackItem("Attack",true,true,new Position(rnd.Next(maxY), rnd.Next(maxX)), "Flamesword",10,5));
+            WorldObjects.Add(new WeaponBoostAlter("Alter",false,false,new Position(rnd.Next(maxY), rnd.Next(maxX)),"FireAlter"));
+            
         }
 
         public void StartGame()
@@ -66,7 +70,6 @@ namespace GameFrameworkLib.Playground
             _mainCreature = (mainChosen == 0) ? new Wolf("Main", 100, new List<AttackItem>(), new List<DefenceItem>()) :
                                                 new Lizard("Main", 100, new List<AttackItem>(), new List<DefenceItem>());
             Task.Run(() => StartKeyReader());
-
             // using state machine pattern
             Istate stateMachine = new CharacterStateMachinePattern();
 
@@ -123,6 +126,8 @@ namespace GameFrameworkLib.Playground
 
         private InputType ReadNextEvent()
         {
+            _pauseEvent.Wait();
+
             InputType ev = InputType.FORWARD;
 
             if (_keyStrokes.Count > 0)
@@ -176,6 +181,10 @@ namespace GameFrameworkLib.Playground
                 WorldObject worldObject = WorldObjects.FirstOrDefault(p => p.PositionOnMap.Equals(_mainCreature.CharacterOnMap));
                 if (worldObject != null) 
                 {
+                    if (worldObject is WeaponBoostAlter alter)
+                    {
+                        _mainCreature.AttackBoost = alter.Boost(_mainCreature.WeaponEquipped);
+                    }
                 _mainCreature.Loot(worldObject);
                 }
             }
@@ -186,7 +195,7 @@ namespace GameFrameworkLib.Playground
         public void PrintPlayground()
         {
             Console.Clear();
-            Console.WriteLine($"Name: {_mainCreature.Name} | HP: {_mainCreature.Hitpoint} | AttackItem: {(_mainCreature.HasWeapon() ? _mainCreature.WeaponEquipped().Name : "")} | Power: {_mainCreature.CalculatePower()}");
+            Console.WriteLine($"Name: {_mainCreature.Name} | HP: {_mainCreature.Hitpoint} | AttackItem: {(_mainCreature.WeaponEquipped != null ? _mainCreature.WeaponEquipped.Name : "")} | Power: {_mainCreature.CalculatePower()}");
             Console.WriteLine(horizontalLine);
             for (int r = 0; r < MaxY; r++)
             {
@@ -239,6 +248,12 @@ namespace GameFrameworkLib.Playground
                             break;
                     }
                 }
+                else if (_worldobject.PositionOnMap.Equals(p) && _worldobject is WeaponBoostAlter && _mainCreature.WeaponEquipped != null)
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write('#');
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
             }
 
             if (_mainCreature.CharacterOnMap.Equals(p))
@@ -267,10 +282,31 @@ namespace GameFrameworkLib.Playground
             var result = ShowOptions(["Yes", "No"], title);
             if (result == 0)
             {
+                if (MainCreature.AttackBoost == null)
+                {
+                    while (MainCreature.Hitpoint > 0 && OpponentCreature.Hitpoint > 0)
+                    {
+                        OpponentCreature.RecieveHit(MainCreature.Hit());
+                        MainCreature.RecieveHit(OpponentCreature.Hit());
+
+                        if (MainCreature.Hitpoint <= 0 || OpponentCreature.Hitpoint <= 0)
+                        {
+                            string response = MainCreature.Hitpoint <= 0 ? OpponentCreature.Name : MainCreature.Name;
+                            bool IsAlive = MainCreature.Hitpoint > 0 ? true : false;
+                            Console.WriteLine(response + " Won!");
+                            Console.ReadLine();
+                            return IsAlive;
+
+                        }
+                        Thread.Sleep(1000);
+                    }
+                }
+                else
+                {
                 while (MainCreature.Hitpoint > 0 && OpponentCreature.Hitpoint > 0)
                 {
-                    OpponentCreature.RecieveHit(MainCreature.Hit());
-                    MainCreature.RecieveHit(OpponentCreature.Hit());
+                        OpponentCreature.RecieveHit(MainCreature.Hit());
+                        MainCreature.RecieveHit(OpponentCreature.Hit());
 
                     if (MainCreature.Hitpoint <= 0 || OpponentCreature.Hitpoint <= 0)
                     {
@@ -278,10 +314,12 @@ namespace GameFrameworkLib.Playground
                         bool IsAlive = MainCreature.Hitpoint > 0 ? true : false;
                         Console.WriteLine(response + " Won!");
                         Console.ReadLine();
+                        MainCreature.AttackBoost = null;
                         return IsAlive;
 
                     }
                     Thread.Sleep(1000);
+                }
                 }
                 return false;
             }
@@ -298,6 +336,8 @@ namespace GameFrameworkLib.Playground
 
             while (!optionChosen)
             {
+                
+
                 // Clear the entire console window.
                 Console.Clear();
                 Console.WriteLine(title);

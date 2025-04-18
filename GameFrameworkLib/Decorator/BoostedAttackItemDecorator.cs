@@ -9,13 +9,16 @@ namespace GameFrameworkLib.Decorator
 {
     public class BoostedAttackItemDecorator : AttackItemDecorator
     {
+        private int baseBoost = 5;
+
+        public int BaseBoost { get => baseBoost; }
         public BoostedAttackItemDecorator(IAttackItem attackItem) : base(attackItem)
         {
         }
 
         public override int DecorateHIT()
         {
-            return base.DecorateHIT() + 5;
+            return base.DecorateHIT() + baseBoost;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace GameFrameworkLib.Strategy
             if (worldObject is AttackItem attackItem)
             {
                 creature.AttackItems.Add(attackItem);
+                creature.WeaponEquipped = creature.AttackItems[0];
             }
             worldObject.Lootable = false;
             worldObject.Removeable = true;

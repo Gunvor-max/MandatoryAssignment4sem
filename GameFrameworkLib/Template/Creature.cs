@@ -1,5 +1,6 @@
 ﻿using GameFrameworkLib.AttackItems.BaseAttackItem;
 using GameFrameworkLib.Creatures;
+using GameFrameworkLib.Decorator;
 using GameFrameworkLib.Playground;
 using GameFrameworkLib.State;
 using System;
@@ -18,6 +19,8 @@ namespace GameFrameworkLib.Template
     {
         public Position CharacterOnMap { get; set; }
         public string Name { get; set; }
+        public AttackItem WeaponEquipped { get; set; }
+        public IAttackItem AttackBoost { get; set; }
         public int Hitpoint { get; set; }
         private int _headRow = 2;
         private int _headCol = 2;
@@ -127,28 +130,21 @@ namespace GameFrameworkLib.Template
             }
         }
 
-        public bool HasWeapon()
-        {
-            if (AttackItems.Count != 0)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public AttackItem WeaponEquipped()
-        {
-            if (HasWeapon())
-            {
-                return AttackItems[0];
-            }
-            return null;
-        }
-
         public int CalculatePower()
         {
             int basedmg = 10;
-            AttackItem attackItem = WeaponEquipped();
+            if (AttackBoost != null)
+            {
+                switch (AttackBoost)
+                {
+                    case BoostedAttackItemDecorator boostedAttackItemDecorator:
+                        basedmg += boostedAttackItemDecorator.BaseBoost;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            AttackItem attackItem = WeaponEquipped;
             return attackItem == null ? basedmg : basedmg + attackItem.Hit;
         }
 
@@ -168,7 +164,8 @@ namespace GameFrameworkLib.Template
                     }
                     else
                     {
-                    Console.WriteLine($"{Name} gets hit now has {Hitpoint} hp");
+                        string response = $"{Name} gets hit now has {Hitpoint} hp";
+                        Console.WriteLine(response);
                     }
                     break;
                 default:
