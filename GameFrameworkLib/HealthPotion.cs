@@ -10,9 +10,12 @@ namespace GameFrameworkLib
 {
     public class HealthPotion : WorldObject
     {
+        #region Properties
         public string Name { get; set; }
         public int GiveHealthBack { get; set; }
+        #endregion
 
+        #region Constructors
         public HealthPotion():this("Health", true, true, new Position(), "Greater HealthPotion",20)
         {
             
@@ -24,5 +27,6 @@ namespace GameFrameworkLib
             GiveHealthBack = giveHealthBack;
             LootStrategy = new HealthPotionLootStrategy();
         }
+        #endregion
     }
 }

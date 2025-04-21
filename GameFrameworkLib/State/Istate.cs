@@ -25,6 +25,11 @@ namespace GameFrameworkLib.State
     public record Move(int row, int col);
     public interface Istate
     {
+        /// <summary>
+        /// Method for setting the state and action from a given user input
+        /// </summary>
+        /// <param name="input">Enum input</param>
+        /// <returns>Move object with the next move for the main character</returns>
         Move NextMove(InputType input);
     }
 }

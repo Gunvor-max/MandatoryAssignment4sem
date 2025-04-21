@@ -10,12 +10,15 @@ namespace GameFrameworkLib
 {
     public class WorldObject
     {
+        #region Properties
         public ILootStrategy LootStrategy { get; set; }
         public string Name { get; set; }
         public bool Lootable { get; set; }
         public bool Removeable { get; set; }
         public Position PositionOnMap { get; set; }
+        #endregion
 
+        #region Constructors
         public WorldObject()
         {
             
@@ -28,5 +31,6 @@ namespace GameFrameworkLib
             Removeable = removeable;
             PositionOnMap = position;
         }
+        #endregion
     }
 }

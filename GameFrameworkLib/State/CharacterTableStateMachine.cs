@@ -8,19 +8,24 @@ namespace GameFrameworkLib.State
 {
     class StateAction
     {
+        #region Properties
         public CharacterHeadingStatesType HeadingState { get; set; } // next state
         public CharacterHeadingStatesType Action { get; set; } // direction the snake should move
+        #endregion
 
     }
 
     public class CharacterTableStateMachine : Istate
     {
+        #region Instance Fields
         // internal table as StateMachine
         private StateAction[,] _stateMachine;
         private CharacterHeadingStatesType _currentHeadingState;
+        #endregion
 
         public CharacterTableStateMachine()
         {
+            #region Instance fields
             _currentHeadingState = CharacterHeadingStatesType.NORTH;
 
             // initialize table
@@ -40,9 +45,16 @@ namespace GameFrameworkLib.State
             _stateMachine[(int)CharacterHeadingStatesType.SOUTH, (int)InputType.LEFT] = new StateAction() { HeadingState = CharacterHeadingStatesType.EAST, Action = CharacterHeadingStatesType.EAST };
             _stateMachine[(int)CharacterHeadingStatesType.SOUTH, (int)InputType.RIGHT] = new StateAction() { HeadingState = CharacterHeadingStatesType.WEST, Action = CharacterHeadingStatesType.WEST };
             _stateMachine[(int)CharacterHeadingStatesType.SOUTH, (int)InputType.FORWARD] = new StateAction() { HeadingState = CharacterHeadingStatesType.SOUTH, Action = CharacterHeadingStatesType.SOUTH };
+
+            #endregion
         }
 
-
+        #region Methods
+        /// <summary>
+        /// Method for generating the next move for the main character
+        /// </summary>
+        /// <param name="input">Enum input</param>
+        /// <returns>A move object with the next move</returns>
         public Move NextMove(InputType input)
         {
             // Find next move from current state and input
@@ -53,6 +65,11 @@ namespace GameFrameworkLib.State
             return ConvertDirection2Move(nextMove);
         }
 
+        /// <summary>
+        /// Method for converting the state to a move object with coordinates
+        /// </summary>
+        /// <param name="nextMove">Enum input</param>
+        /// <returns>Move object with coordinates</returns>
         private Move ConvertDirection2Move(CharacterHeadingStatesType nextMove)
         {
             switch (nextMove)
@@ -64,5 +81,6 @@ namespace GameFrameworkLib.State
                 default: return MoveObjects.GoWest;
             }
         }
+        #endregion
     }
 }

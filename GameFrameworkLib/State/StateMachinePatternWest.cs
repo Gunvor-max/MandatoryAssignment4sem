@@ -11,7 +11,11 @@ namespace GameFrameworkLib.State
         private static readonly IStateMachinePattern NORTH = StateObjects.North;
         private static readonly IStateMachinePattern SOUTH = StateObjects.South;
 
-
+        /// <summary>
+        /// Method for returning the next state from an inputtype
+        /// </summary>
+        /// <param name="input">Enum input</param>
+        /// <returns>IStateMachinePattern object</returns>
         public IStateMachinePattern NextState(InputType input)
         {
             switch (input)
@@ -24,6 +28,11 @@ namespace GameFrameworkLib.State
             return this;
         }
 
+        /// <summary>
+        /// Method for returning the next move from an inputtype
+        /// </summary>
+        /// <param name="input">Enum input</param>
+        /// <returns>A move object with coordinates</returns>
         public Move NextAction(InputType input)
         {
             switch (input)

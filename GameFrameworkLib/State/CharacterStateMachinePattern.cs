@@ -8,14 +8,24 @@ namespace GameFrameworkLib.State
 {
     public class CharacterStateMachinePattern : Istate
     {
+        #region Instance Fields
         // internal StateMachine as pattern i.e. objects
         private IStateMachinePattern _currentState;
+        #endregion
 
+        #region Constructor
         public CharacterStateMachinePattern()
         {
             _currentState = StateObjects.East;
         }
+        #endregion
 
+        #region Methods
+        /// <summary>
+        /// Method for setting the state and action from a given user input
+        /// </summary>
+        /// <param name="input">Enum input</param>
+        /// <returns>Move object with the next move for the main character</returns>
         public Move NextMove(InputType input)
         {
             // Find next move from current state and input
@@ -25,9 +35,8 @@ namespace GameFrameworkLib.State
 
             _currentState = _currentState.NextState(input);
 
-            //Notify.Debug(input.ToString(), _currentState.Retning);
-
             return nextMove;
         }
+        #endregion
     }
 }

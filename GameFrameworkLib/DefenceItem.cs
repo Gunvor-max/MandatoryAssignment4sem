@@ -9,9 +9,12 @@ namespace GameFrameworkLib
 {
     public class DefenceItem : WorldObject
     {
+        #region Properties
         public string Name { get; set; }
         public int ReduceHitpoint { get; set; }
+        #endregion
 
+        #region Constructors
         public DefenceItem():this("TestShield",4)
         {
             
@@ -23,5 +26,6 @@ namespace GameFrameworkLib
             ReduceHitpoint = reduceHitpoint;
             LootStrategy = new DefenceItemLootStrategy();
         }
+        #endregion
     }
 }

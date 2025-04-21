@@ -8,9 +8,12 @@ namespace GameFrameworkLib.Playground
 {
     public class Position
     {
+        #region Properties
         public int Row { get; set; }
         public int Col { get; set; }
+        #endregion
 
+        #region Constructors
         public Position() : this(0, 0)
         {
         }
@@ -20,15 +23,24 @@ namespace GameFrameworkLib.Playground
             Row = row;
             Col = col;
         }
+        #endregion
 
-        /*
-         * For checking if two prositions have the same values
-         */
+        #region Methods
+        /// <summary>
+        /// Method for checking if two prositions have the same values aka is at the same place
+        /// </summary>
+        /// <param name="other">The position object to be compared with</param>
+        /// <returns>true if the two positions are equal</returns>
         protected bool Equals(Position other)
         {
             return Row == other.Row && Col == other.Col;
         }
 
+        /// <summary>
+        /// Method for determining whether the specified object is equal to the current position.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current position.</param>
+        /// <returns>True if the specified object is a position object with the same row and column values as this position.</returns>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -37,6 +49,10 @@ namespace GameFrameworkLib.Playground
             return Equals((Position)obj);
         }
 
+        /// <summary>
+        /// Method for generating a hash code for the current position based on row and column values.
+        /// </summary>
+        /// <returns>A hash code representing the current position.</returns>
         public override int GetHashCode()
         {
             unchecked
@@ -44,5 +60,6 @@ namespace GameFrameworkLib.Playground
                 return (Row * 397) ^ Col;
             }
         }
+        #endregion
     }
 }

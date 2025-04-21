@@ -11,10 +11,13 @@ namespace GameFrameworkLib.AttackItems.BaseAttackItem
 {
     public class AttackItem : WorldObject, IAttackItem
     {
+        #region Properties
         public string Name { get; set; }
         public int Hit { get; set; }
         public int Range { get; set; }
+        #endregion
 
+        #region Constructors
         public AttackItem() : this("AttackItem", true, true, new Position(), "TestSword", 5, 2)
         {
 
@@ -27,7 +30,13 @@ namespace GameFrameworkLib.AttackItems.BaseAttackItem
             Range = range;
             LootStrategy = new AttackItemLootStrategy();
         }
+        #endregion
 
+        #region Methods
+        /// <summary>
+        /// Method for Decorating a hit with extra damage.
+        /// </summary>
+        /// <returns>The original hit damage from the attackItem</returns>
         public int DecorateHIT()
         {
             return Hit;
@@ -37,5 +46,6 @@ namespace GameFrameworkLib.AttackItems.BaseAttackItem
         {
             return $"{{{nameof(Name)}={Name}, {nameof(Hit)}={Hit.ToString()}, {nameof(Range)}={Range.ToString()}, {nameof(Name)}={Name}, {nameof(Lootable)}={Lootable.ToString()}, {nameof(Removeable)}={Removeable.ToString()}}}";
         }
+        #endregion
     }
 }

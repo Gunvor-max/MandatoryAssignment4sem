@@ -8,6 +8,10 @@ namespace GameFrameworkLib.Decorator
 {
     public interface IAttackItem
     {
+        /// <summary>
+        /// Method used with the decorator design pattern for adding additional damage to an attack
+        /// </summary>
+        /// <returns>The total damage with the damage boost from the decorator</returns>
         public int DecorateHIT();
     }
 }
